@@ -29,7 +29,6 @@ func (r *MongoRepo) GetBookByISBN(ctx context.Context, id string) (*entity.Book,
 }
 
 func (r *MongoRepo) CreateBook(ctx context.Context, book *entity.BookForm) (interface{}, error) {
-	fmt.Println(book)
 	res, err := r.booksCollection.InsertOne(ctx, book)
 	if err != nil {
 		fmt.Println(err)

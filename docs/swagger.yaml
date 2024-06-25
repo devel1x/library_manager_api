@@ -106,6 +106,19 @@ definitions:
       meta:
         $ref: '#/definitions/http.meta'
     type: object
+  v1.BookInputForm:
+    properties:
+      author:
+        items:
+          type: string
+        type: array
+      isbn:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+    type: object
   v1.UserLoginForm:
     properties:
       password:
@@ -170,12 +183,12 @@ paths:
       - application/json
       description: Create a new book
       parameters:
-      - description: Book form
+      - description: Book input form
         in: body
         name: book
         required: true
         schema:
-          $ref: '#/definitions/entity.BookForm'
+          $ref: '#/definitions/v1.BookInputForm'
       produces:
       - application/json
       responses:

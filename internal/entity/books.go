@@ -10,7 +10,7 @@ type Book struct {
 	Publisher string    `json:"publisher" bson:"publisher"`
 	Author    []string  `json:"author" bson:"author"`
 	CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt" bson:"updatedAt,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
 }
 
 type BookForm struct {
@@ -19,7 +19,7 @@ type BookForm struct {
 	Publisher string    `json:"publisher" bson:"publisher"`
 	Author    []string  `json:"author" bson:"author"`
 	CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt" bson:"updatedAt,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
 }
 
 type BookFormError struct {

@@ -84,12 +84,12 @@
                 "summary": "Create Book",
                 "parameters": [
                     {
-                        "description": "Book form",
+                        "description": "Book input form",
                         "name": "book",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.BookForm"
+                            "$ref": "#/definitions/v1.BookInputForm"
                         }
                     }
                 ],
@@ -638,6 +638,26 @@
             "properties": {
                 "meta": {
                     "$ref": "#/definitions/http.meta"
+                }
+            }
+        },
+        "v1.BookInputForm": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "isbn": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },

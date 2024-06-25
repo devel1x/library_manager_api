@@ -27,7 +27,7 @@ type BookInputForm struct {
 // @Tags Book
 // @Accept json
 // @Produce json
-// @Param book body entity.BookForm true "Book form"
+// @Param book body BookInputForm true "Book input form"
 // @Success 201 {string} book successfully created "Book created"
 // @Failure 400 {object} entity.BookFormError "Invalid input"
 // @Failure 500 {string} Internal server error "Internal server error"
