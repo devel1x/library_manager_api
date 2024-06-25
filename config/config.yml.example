@@ -1,0 +1,25 @@
+app:
+  port: 8080
+  cors:
+    allow_origins:
+      - "*"
+    allow_methods:
+      - "GET"
+    allow_headers:
+      - "*"
+  rto: 30s
+  wto: 30s
+
+repository:
+  mongo:
+    db_name: "data"
+    books_collection: "books"
+    users_collection: "users"
+  redis:
+    addr: "redis:6379"
+    ttl: 3600s
+
+auth：
+access_token_ttl: 120m
+refresh_token_ttl: 43200m #30 days
+

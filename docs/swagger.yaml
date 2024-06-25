@@ -1,0 +1,436 @@
+basePath: /
+definitions:
+  dto.Test:
+    properties:
+      tests:
+        items:
+          $ref: '#/definitions/entity.Test'
+        type: array
+    type: object
+  entity.Book:
+    properties:
+      author:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      isbn:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  entity.BookForm:
+    properties:
+      author:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      isbn:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  entity.BookFormError:
+    properties:
+      author:
+        type: string
+      isbn:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+    type: object
+  entity.RefreshInput:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  entity.Test:
+    type: object
+  entity.Tokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  entity.UserFormError:
+    properties:
+      password:
+        type: string
+      secret:
+        type: string
+      username:
+        type: string
+    type: object
+  http.errorDetails:
+    properties:
+      fields:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  http.meta:
+    properties:
+      code:
+        type: integer
+      debug_id:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/http.errorDetails'
+        type: array
+      message:
+        type: string
+      reason:
+        type: string
+    type: object
+  http.response:
+    properties:
+      meta:
+        $ref: '#/definitions/http.meta'
+    type: object
+  v1.UserLoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  v1.UserSignupForm:
+    properties:
+      password:
+        type: string
+      secret:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample implementation of a RESTful API for a library.
+  title: Library Manager API
+  version: "1.0"
+paths:
+  /api/v1/book:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of books with optional filters
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Book'
+            type: array
+        "400":
+          description: Invalid query parameters
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: List Books
+      tags:
+      - Book
+    post:
+      consumes:
+      - application/json
+      description: Create a new book
+      parameters:
+      - description: Book form
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BookForm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Book created
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/entity.BookFormError'
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create Book
+      tags:
+      - Book
+  /api/v1/book/{bookISBN}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a book by its ISBN
+      parameters:
+      - description: Book ISBN
+        in: path
+        name: bookISBN
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Book deleted
+          schema:
+            type: string
+        "404":
+          description: Book not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete Book by ISBN
+      tags:
+      - Book
+    get:
+      consumes:
+      - application/json
+      description: Get a book by its ISBN
+      parameters:
+      - description: Book ISBN
+        in: path
+        name: bookISBN
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Book'
+        "404":
+          description: Book not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get Book by ISBN
+      tags:
+      - Book
+    put:
+      consumes:
+      - application/json
+      description: Update an existing book by its ISBN
+      parameters:
+      - description: Book ISBN
+        in: path
+        name: bookISBN
+        required: true
+        type: string
+      - description: Book form
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BookForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book updated
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/entity.BookFormError'
+        "404":
+          description: Book not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update Book by ISBN
+      tags:
+      - Book
+  /api/v1/user/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh JWT tokens for a user
+      parameters:
+      - description: Refresh token information
+        in: body
+        name: refresh
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RefreshInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: New JWT Tokens
+          schema:
+            $ref: '#/definitions/entity.Tokens'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Refresh user token
+      tags:
+      - User
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      description: User login endpoint
+      parameters:
+      - description: Login form
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/v1.UserLoginForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Tokens'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/entity.UserFormError'
+        "404":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: User Login
+      tags:
+      - User
+  /api/v1/user/signup:
+    post:
+      consumes:
+      - application/json
+      description: User signup endpoint
+      parameters:
+      - description: Signup form
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/v1.UserSignupForm'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/entity.UserFormError'
+        "409":
+          description: User already exists
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: User Signup
+      tags:
+      - User
+  /v1/test:
+    get:
+      description: get tests by param
+      parameters:
+      - description: param
+        in: query
+        name: param
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Test'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.Test'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.response'
+      summary: tests by param
+      tags:
+      - Test
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
