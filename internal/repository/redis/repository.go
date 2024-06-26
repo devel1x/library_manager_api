@@ -103,7 +103,7 @@ func (r *RedisRepo) DeleteBookByISBN(ctx context.Context, id string) error {
 	return nil
 }
 
-func (r *RedisRepo) UpdateBookByISBN(ctx context.Context, book *entity.BookForm) error {
+func (r *RedisRepo) UpdateBookByISBN(ctx context.Context, book *entity.BookFormUpdate) error {
 	key := bookIDKey(book.ISBN)
 	existingData, err := r.client.Get(ctx, key).Result()
 	if err != nil {

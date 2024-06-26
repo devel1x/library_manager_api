@@ -29,10 +29,9 @@ func (h *Handler) FindBookInCache(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				v, ok := r.Context().Value(BookParam).(*entity.Book)
 				if !ok {
-					h.responder.WithInternalError(w, "couldnt convert book to struct")
+					h.responder.WithInternalError(w, "couldn't convert book to struct")
 					return
 				}
-
 				err = h.cache.InsertBook(ctx, v)
 				if err != nil {
 					h.responder.WithInternalError(w, "error inserting book in cache")
@@ -43,15 +42,14 @@ func (h *Handler) FindBookInCache(next http.Handler) http.Handler {
 			return
 		}
 		h.responder.WithOK(w, book)
-		return
 	})
 }
 
 func (h *Handler) UpdateBookInCache(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r = r.WithContext(context.WithValue(r.Context(), BookParam, &entity.BookForm{}))
+		r = r.WithContext(context.WithValue(r.Context(), BookParam, &entity.BookFormCreate{}))
 		next.ServeHTTP(w, r)
-		v, ok := r.Context().Value(BookParam).(*entity.BookForm)
+		v, ok := r.Context().Value(BookParam).(*entity.BookFormUpdate)
 		if !ok {
 			h.responder.WithInternalError(w, "couldnt convert book to struct")
 			return
@@ -82,25 +80,6 @@ func (h *Handler) DeleteBookFromCache(next http.Handler) http.Handler {
 				return
 			}
 			h.responder.WithInternalError(w, fmt.Sprintf("error getting book from cache: %v", err))
-			return
-		}
-	})
-}
-
-func (h *Handler) InsertBookInCache(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("3")
-		next.ServeHTTP(w, r)
-		fmt.Println("2")
-		ctx := r.Context()
-		book, ok := r.Context().Value(BookParam).(*entity.Book)
-		if !ok {
-			h.responder.WithInternalError(w, "couldnt convert book to struct")
-			return
-		}
-		err := h.cache.InsertBook(ctx, book)
-		if err != nil {
-			h.responder.WithInternalError(w, err.Error())
 		}
 	})
 }
@@ -109,14 +88,12 @@ func (h *Handler) adminIdentity(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := h.parseAuthHeader(r)
 		if err != nil {
-			fmt.Println("1", err)
 			h.responder.WithUnauthorizedError(w)
 			return
 		}
 		fmt.Println(id)
 		user, err := h.userService.GetUserByID(id)
 		if err != nil {
-			fmt.Println("2", err)
 			if errors.Is(err, utils.ErrUserNotFound) {
 				h.responder.WithUnauthorizedError(w)
 				return
@@ -126,7 +103,6 @@ func (h *Handler) adminIdentity(next http.Handler) http.Handler {
 		}
 		// ----------
 		if user.Role != 1 {
-			fmt.Println("HUINYA")
 			h.responder.WithForbiddenError(w)
 			return
 		}

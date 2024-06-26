@@ -49,6 +49,6 @@ func SetHandler(
 	handler := NewHandler(responder, logger, userService, booksService, cache, manager)
 	mux.Route("/api", handler.setRoutes)
 	mux.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("/swagger/doc.json"), // The url pointing to API definition
+		httpSwagger.URL("/swagger/doc.json"),
 	))
 }

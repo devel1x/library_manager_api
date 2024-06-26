@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"template/internal/entity"
@@ -46,16 +45,7 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	id, err := h.booksService.CreateBook(ctx, &form)
 	if err != nil {
 		if errors.Is(err, utils.InvalidForm) {
-			data, err := json.Marshal(form.BookErrors)
-			if err != nil {
-				h.responder.WithInternalError(w, err.Error())
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			_, err = w.Write(data)
-			if err != nil {
-				h.responder.WithInternalError(w, "again error userError")
-			}
+			h.responder.WriteResponse(w, form.BookErrors, http.StatusBadRequest)
 			return
 		}
 		if errors.Is(err, utils.ErrBookAlreadyExists) {
@@ -112,7 +102,6 @@ func (h *Handler) ListBook(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetBookByISBN(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	idParam := chi.URLParam(r, BookParam)
-	fmt.Println(2)
 	if idParam == "" {
 		h.responder.WithBadRequest(w, "empty id param")
 		return
@@ -143,7 +132,7 @@ func (h *Handler) GetBookByISBN(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Param bookISBN path string true "Book ISBN"
-// @Param book body entity.BookForm true "Book form"
+// @Param book body entity.BookFormCreate true "Book form"
 // @Success 200 {string} book successfully updated "Book updated"
 // @Failure 400 {object} entity.BookFormError "Invalid input"
 // @Failure 404 {string} book not found "Book not found"
@@ -173,7 +162,7 @@ func (h *Handler) UpdateBookByISBN(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	v, ok := ctx.Value(BookParam).(*entity.BookForm)
+	v, ok := ctx.Value(BookParam).(*entity.BookFormUpdate)
 	if !ok {
 		h.responder.WithInternalError(w, "cannot convert to book")
 		return

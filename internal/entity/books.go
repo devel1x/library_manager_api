@@ -13,7 +13,16 @@ type Book struct {
 	UpdatedAt time.Time `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
 }
 
-type BookForm struct {
+type BookFormCreate struct {
+	ISBN      string    `json:"isbn" bson:"_id"`
+	Title     string    `json:"title" bson:"title"`
+	Publisher string    `json:"publisher" bson:"publisher"`
+	Author    []string  `json:"author" bson:"author"`
+	CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"`
+}
+
+type BookFormUpdate struct {
 	ISBN      string    `json:"isbn" bson:"_id"`
 	Title     string    `json:"title" bson:"title"`
 	Publisher string    `json:"publisher" bson:"publisher"`

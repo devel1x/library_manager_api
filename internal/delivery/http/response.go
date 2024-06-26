@@ -23,6 +23,7 @@ type Responder interface {
 	WithUnauthorizedError(w http.ResponseWriter) string
 	WithForbiddenError(w http.ResponseWriter) string //uuid
 	WithTooManyRequests(w http.ResponseWriter) string
+	WriteResponse(w http.ResponseWriter, v interface{}, statusCode int)
 }
 
 func NewResponder(logger *zap.Logger) *responder {
@@ -50,21 +51,21 @@ type response struct {
 
 func (r *responder) With(statusCode int, w http.ResponseWriter, v interface{}) {
 	if (statusCode >= 200 && statusCode < 300) || statusCode == 404 {
-		r.writeResponse(w, v, statusCode)
+		r.WriteResponse(w, v, statusCode)
 	} else {
 		r.withError(w, v.(string), statusCode)
 	}
 
 }
 func (r *responder) WithOK(w http.ResponseWriter, v interface{}) {
-	r.writeResponse(w, v, http.StatusOK)
+	r.WriteResponse(w, v, http.StatusOK)
 }
 func (r *responder) WithNotFound(w http.ResponseWriter, v interface{}) {
-	r.writeResponse(w, v, http.StatusNotFound)
+	r.WriteResponse(w, v, http.StatusNotFound)
 }
 
 func (r *responder) WithCreated(w http.ResponseWriter, v interface{}) {
-	r.writeResponse(w, v, http.StatusCreated)
+	r.WriteResponse(w, v, http.StatusCreated)
 }
 
 func (r *responder) WithBadRequest(w http.ResponseWriter, message string) string {
@@ -99,11 +100,11 @@ func (r *responder) withError(w http.ResponseWriter, message string, code int) s
 		},
 	}
 
-	r.writeResponse(w, res, code)
+	r.WriteResponse(w, res, code)
 	return errorUuid
 }
 
-func (r *responder) writeResponse(w http.ResponseWriter, v interface{}, statusCode int) {
+func (r *responder) WriteResponse(w http.ResponseWriter, v interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	data, err := json.Marshal(v)

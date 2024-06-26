@@ -15,7 +15,7 @@ type userService interface {
 type bookService interface {
 	ListBook(ctx context.Context, page, limit string) (*entity.PaginatedBooks, error)
 	GetBookByISBN(ctx context.Context, id string) (*entity.Book, error)
-	UpdateBookByISBN(ctx context.Context, book *BookInputForm) (*entity.BookForm, error)
+	UpdateBookByISBN(ctx context.Context, book *BookInputForm) (*entity.BookFormUpdate, error)
 	DeleteBookByISBN(ctx context.Context, id string) error
 	CreateBook(ctx context.Context, book *BookInputForm) (interface{}, error)
 }
@@ -24,5 +24,5 @@ type redisInterface interface {
 	InsertBook(ctx context.Context, book *entity.Book) error
 	FindBookByISBN(ctx context.Context, id string) (*entity.Book, error)
 	DeleteBookByISBN(ctx context.Context, id string) error
-	UpdateBookByISBN(ctx context.Context, book *entity.BookForm) error
+	UpdateBookByISBN(ctx context.Context, book *entity.BookFormUpdate) error
 }

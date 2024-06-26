@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func BookToForm(book *v1.BookInputForm) *entity.BookForm {
-	form := entity.BookForm{
+func BookToForm(book *v1.BookInputForm) *entity.BookFormCreate {
+	form := entity.BookFormCreate{
 		ISBN:      book.ISBN,
 		Title:     book.Title,
 		Publisher: book.Publisher,
@@ -18,8 +18,8 @@ func BookToForm(book *v1.BookInputForm) *entity.BookForm {
 	return &form
 }
 
-func BookToFormUpdate(book *v1.BookInputForm) *entity.BookForm {
-	form := entity.BookForm{
+func BookToFormUpdate(book *v1.BookInputForm) *entity.BookFormUpdate {
+	form := entity.BookFormUpdate{
 		ISBN:      book.ISBN,
 		Title:     book.Title,
 		Publisher: book.Publisher,

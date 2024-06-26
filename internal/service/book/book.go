@@ -13,7 +13,7 @@ import (
 
 const (
 	limitDefault = 5
-	pageDefautl  = 1
+	pageDefault  = 1
 )
 
 type BookService struct {
@@ -28,9 +28,9 @@ func NewBookService(bookRepo bookRepo) *BookService {
 
 type bookRepo interface {
 	GetBookByISBN(ctx context.Context, id string) (*entity.Book, error)
-	CreateBook(ctx context.Context, book *entity.BookForm) (interface{}, error)
+	CreateBook(ctx context.Context, book *entity.BookFormCreate) (interface{}, error)
 	ListBook(ctx context.Context, page, pageSize int) (*entity.PaginatedBooks, error)
-	UpdateBookByISBN(ctx context.Context, book *entity.BookForm) error
+	UpdateBookByISBN(ctx context.Context, book *entity.BookFormUpdate) error
 	DeleteBookByISBN(ctx context.Context, id string) error
 }
 
@@ -43,7 +43,7 @@ func (s *BookService) ListBook(ctx context.Context, pageStr, limitStr string) (*
 	var page, limit int
 	var err error
 	if utf8.RuneCountInString(pageStr) == 0 {
-		page = pageDefautl
+		page = pageDefault
 	} else {
 		page, err = strconv.Atoi(pageStr)
 		if err != nil {
@@ -69,7 +69,7 @@ func (s *BookService) ListBook(ctx context.Context, pageStr, limitStr string) (*
 	return s.bookRepo.ListBook(ctx, page, limit)
 }
 
-func (s *BookService) UpdateBookByISBN(ctx context.Context, book *v1.BookInputForm) (*entity.BookForm, error) {
+func (s *BookService) UpdateBookByISBN(ctx context.Context, book *v1.BookInputForm) (*entity.BookFormUpdate, error) {
 	form := dto.BookToFormUpdate(book)
 	return form, s.bookRepo.UpdateBookByISBN(ctx, form)
 }

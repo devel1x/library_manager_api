@@ -28,7 +28,7 @@ func (r *MongoRepo) GetBookByISBN(ctx context.Context, id string) (*entity.Book,
 	return &book, nil
 }
 
-func (r *MongoRepo) CreateBook(ctx context.Context, book *entity.BookForm) (interface{}, error) {
+func (r *MongoRepo) CreateBook(ctx context.Context, book *entity.BookFormCreate) (interface{}, error) {
 	res, err := r.booksCollection.InsertOne(ctx, book)
 	if err != nil {
 		fmt.Println(err)
@@ -86,7 +86,7 @@ func (r *MongoRepo) ListBook(ctx context.Context, page, pageSize int) (*entity.P
 	return &result, nil
 }
 
-func (r *MongoRepo) UpdateBookByISBN(ctx context.Context, book *entity.BookForm) error {
+func (r *MongoRepo) UpdateBookByISBN(ctx context.Context, book *entity.BookFormUpdate) error {
 	updateQuery := bson.M{}
 
 	updateQuery["updatedAt"] = time.Now()

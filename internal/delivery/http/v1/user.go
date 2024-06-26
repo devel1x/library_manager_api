@@ -45,10 +45,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		h.responder.WithInternalError(w, err.Error())
 		return
 	}
-	//data, err := json.Marshal(res)
-	//if err != nil {
-	//	h.responder.WithInternalError(w, err.Error())
-	//}
+
 	h.responder.WithOK(w, res)
 }
 
@@ -81,16 +78,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	id, err := h.userService.SignUp(ctx, &form)
 	if err != nil {
 		if errors.Is(err, utils.InvalidForm) {
-			data, err := json.Marshal(form.UserErrors)
-			if err != nil {
-				h.responder.WithInternalError(w, err.Error())
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			_, err = w.Write(data)
-			if err != nil {
-				h.responder.WithInternalError(w, "error writing to body")
-			}
+			h.responder.WriteResponse(w, form.UserErrors, http.StatusBadRequest)
 			return
 		}
 		if errors.Is(err, utils.ErrUserAlreadyExists) {
@@ -129,11 +117,5 @@ func (h *Handler) userRefresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Add("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(res)
-	if err != nil {
-		h.responder.WithInternalError(w, utils.ErrEncoding.Error())
-		return
-	}
+	h.responder.WithOK(w, res)
 }
